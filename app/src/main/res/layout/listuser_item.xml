@@ -1,0 +1,45 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="40dp">
+
+
+    <ImageView
+        android:id="@+id/id_item_icon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:src="@drawable/down" />
+
+    <ImageView
+        android:id="@+id/id_item_photo"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:src="@drawable/ic_no_clientphoto"
+        android:layout_toRightOf="@+id/id_item_icon"/>
+
+    <TextView
+        android:id="@+id/id_item_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="name item"
+        android:textSize="18sp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/id_item_photo" />
+
+    <TextView
+        android:id="@+id/id_item_decs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/id_item_text"
+        android:layout_alignStart="@+id/id_item_text"
+        android:layout_below="@+id/id_item_photo"
+        android:text="desc item"
+        android:textSize="9sp" />
+
+</RelativeLayout>

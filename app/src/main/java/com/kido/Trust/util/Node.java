@@ -1,20 +1,16 @@
 package com.kido.Trust.util;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Node {
     private Integer id;
     private Integer pid = 0; //根节点的Pid=0;没有父节点
-    private String userId;
-    private String clientId;
-    private Date data
     private String name;
     private String description;
 
     //树的层级
-    private int level;
+//    private int level;
     //当前 item的状态 是否展开
     private boolean isExpand = false;
 
@@ -112,9 +108,9 @@ public class Node {
         return parent == null ? 0 : parent.getLevel() + 1;
     }
 
-    public void setLevel(int level) {
-        this.level = level;
-    }
+//    public void setLevel(int level) {
+//        this.level = level;
+//    }
 
     public boolean isExpand() {
         return isExpand;

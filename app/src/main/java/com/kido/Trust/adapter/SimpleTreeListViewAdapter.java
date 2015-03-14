@@ -29,7 +29,7 @@ public class SimpleTreeListViewAdapter<T> extends TreeListViewAdapter<T> {
                               ViewGroup parent) {
         ViewHolder holder = null;
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.list_item, parent, false);
+            convertView = mInflater.inflate(R.layout.treelist_item, parent, false);
             holder = new ViewHolder();
             holder.mIcon = (ImageView) convertView.findViewById(R.id.id_item_icon);
             holder.mText = (TextView) convertView.findViewById(R.id.id_item_text);
@@ -50,6 +50,7 @@ public class SimpleTreeListViewAdapter<T> extends TreeListViewAdapter<T> {
         holder.mText.setTextSize(18 - node.getLevel() * 2);
         if (node.getChildren().size() > 0) {
             holder.mText.setTypeface(Typeface.DEFAULT_BOLD);
+
         } else {
             holder.mText.setTypeface(Typeface.DEFAULT);
         }
