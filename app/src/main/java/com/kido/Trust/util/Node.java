@@ -1,13 +1,18 @@
 package com.kido.Trust.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Node {
     private Integer id;
     private Integer pid = 0; //根节点的Pid=0;没有父节点
+    private String userId;
+    private String clientId;
+    private Date data
     private String name;
     private String description;
+
     //树的层级
     private int level;
     //当前 item的状态 是否展开
@@ -24,6 +29,12 @@ public class Node {
     }
 
 
+    public Node(int id, int pid, String name) {
+        super();
+        this.id = id;
+        this.pid = pid;
+        this.name = name;
+    }
     public Node(int id, int pid, String name, String description) {
         super();
         this.id = id;
