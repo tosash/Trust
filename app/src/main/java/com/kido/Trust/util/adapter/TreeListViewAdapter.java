@@ -38,7 +38,8 @@ public abstract class TreeListViewAdapter<T> extends BaseAdapter {
 
     public TreeListViewAdapter(ListView tree, Context context, List<T> datas, int defaultExpandLevel) throws IllegalArgumentException, IllegalAccessException {
         mContext = context;
-        mAllnodes = TreeHelper.getSortedNodes(datas, defaultExpandLevel);
+//        mAllnodes = TreeHelper.getSortedNodes(datas, defaultExpandLevel);
+        mAllnodes = (List<Node>) datas;
         mVisibleNodes = TreeHelper.filterVisibleNode(mAllnodes);
         mInflater = LayoutInflater.from(mContext);
         mTree = tree;

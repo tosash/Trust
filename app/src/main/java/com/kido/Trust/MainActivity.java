@@ -24,6 +24,8 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
+import com.kido.Trust.parse.ParseHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +46,10 @@ public class MainActivity extends NavigationLiveo implements NavigationLiveoList
         this.mUserBackground.setImageResource(R.drawable.ic_user_background);
     }
 
+
     @Override
     public void onInt(Bundle savedInstanceState) {
+        ParseHelper.initParse(this);
         //Creation of the list items is here
 
         // set listener {required}

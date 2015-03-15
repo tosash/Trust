@@ -2,12 +2,14 @@ package com.kido.Trust;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,22 +22,25 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.kido.Trust.adapter.SimpleTreeListViewAdapter;
-import com.kido.Trust.bean.FileBean;
+import com.kido.Trust.parse.ParseHelper;
 import com.kido.Trust.util.Node;
 import com.kido.Trust.util.adapter.TreeListViewAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
+
+
 
 public class FragmentTreeList extends Fragment {
 
     private ListView mTree;
-    private SimpleTreeListViewAdapter<FileBean> mAdapter;
-    private List<FileBean> mDatas;
+    private SimpleTreeListViewAdapter<Node> nodeAdapter;
+    private List<Node> nodeList = null;
 
     private boolean mSearchCheck;
     private static final String TEXT_FRAGMENT = "TEXT_FRAGMENT";
-    Context context;
+    private Context context;
+    ProgressDialog mProgressDialog;
+
 
     public FragmentTreeList newInstance(String text) {
         FragmentTreeList mFragment = new FragmentTreeList();
@@ -52,29 +57,76 @@ public class FragmentTreeList extends Fragment {
         context = activity;
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
+
         View rootView = inflater.inflate(R.layout.fragment_treelist, container, false);
-
-//        TextView mTxtTitle = (TextView) rootView.findViewById(R.id.txtTitle);
-//        mTxtTitle.setText(getArguments().getString(TEXT_FRAGMENT));
         mTree = (ListView) rootView.findViewById(com.kido.Trust.R.id.id_listview);
-
-        initDatas();
-        try {
-            mAdapter = new SimpleTreeListViewAdapter<FileBean>(mTree, context, mDatas, 0);
-            mTree.setAdapter(mAdapter);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        initEvent();
+        ParseHelper.getAllNodes(this);
         rootView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         return rootView;
     }
+
+    public void showNodes(List<Node> nodes){
+        // Pass the results into ListViewAdapter.java
+        try {
+            nodeAdapter = new SimpleTreeListViewAdapter<Node>(mTree, context, nodes, 0);
+            // Binds the Adapter to the ListView
+            mTree.setAdapter(nodeAdapter);
+            initEvent();
+        } catch (IllegalAccessException e) {
+            Log.d("Adapter", "Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+//    // RemoteDataTask AsyncTask
+//    private class RemoteDataTask extends AsyncTask<Void, Void, Void> {
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            // Create a progressdialog
+//            mProgressDialog = new ProgressDialog(context);
+//            // Set progressdialog title
+//            mProgressDialog.setTitle("Соединение с сервером");
+//            // Set progressdialog message
+//            mProgressDialog.setMessage("Загрузка...");
+//            mProgressDialog.setIndeterminate(false);
+//            // Show progressdialog
+//            mProgressDialog.show();
+//        }
+//
+//        @Override
+//        protected Void doInBackground(Void... params) {
+//
+//
+//                @Override
+//                public void done(List<ParseObject> parseObjects, com.parse.ParseException e) {
+//                    Log.d("score", "DONE!!!!!!!!");
+//                }
+//            });
+//
+//
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void result) {
+//            // Pass the results into ListViewAdapter.java
+//            try {
+//                nodeAdapter = new SimpleTreeListViewAdapter<Node>(mTree, context, nodeList, 0);
+//            } catch (IllegalAccessException e) {
+//                Log.e("Error", e.getMessage());
+//                e.printStackTrace();
+//            }
+//            // Binds the Adapter to the ListView
+//            mTree.setAdapter(nodeAdapter);
+//            // Close the progressdialog
+//            mProgressDialog.dismiss();
+//        }
+//    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -140,7 +192,7 @@ public class FragmentTreeList extends Fragment {
 
 
     private void initEvent() {
-        mAdapter.setOnTreeNodeClickLister(new TreeListViewAdapter.OnTreeNodeClickLister() {
+        nodeAdapter.setOnTreeNodeClickLister(new TreeListViewAdapter.OnTreeNodeClickLister() {
 
             @Override
             public void OnClick(Node node, int position) {
@@ -167,7 +219,7 @@ public class FragmentTreeList extends Fragment {
                         if (TextUtils.isEmpty(editText.getText().toString())) {
                             return;
                         }
-                        mAdapter.addExtraNode(position, editText.getText().toString(), editText.getText().toString());
+                        nodeAdapter.addExtraNode(position, editText.getText().toString(), editText.getText().toString());
                     }
                 }).setNegativeButton("No", null).show();
                 return true;
@@ -175,28 +227,5 @@ public class FragmentTreeList extends Fragment {
         });
     }
 
-    private void initDatas() {
-        mDatas = new ArrayList<FileBean>();
-        FileBean bean = new FileBean(1, 0, "Работа");
-        mDatas.add(bean);
-        bean = new FileBean(2, 0, "Android");
-        mDatas.add(bean);
-        bean = new FileBean(3, 0, "Стройка");
-        mDatas.add(bean);
-        bean = new FileBean(4, 1, "Анализ остатков");
-        mDatas.add(bean);
-        bean = new FileBean(5, 1, "Купить картридж");
-        mDatas.add(bean);
-        bean = new FileBean(6, 5, "067-111-11-23 компания СистемПринт");
-        mDatas.add(bean);
-        bean = new FileBean(7, 2, "Parse авторизация");
-        mDatas.add(bean);
-        bean = new FileBean(8, 3, "Плитка");
-        mDatas.add(bean);
-        bean = new FileBean(9, 3, "Входные двери");
-        mDatas.add(bean);
-        bean = new FileBean(10, 6, "взять счет для безнала");
-        mDatas.add(bean);
-    }
 
 }

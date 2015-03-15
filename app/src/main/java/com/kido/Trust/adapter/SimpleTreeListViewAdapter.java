@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.kido.Trust.R;
+import com.kido.Trust.parse.ParseHelper;
 import com.kido.Trust.util.Node;
 import com.kido.Trust.util.TreeHelper;
 import com.kido.Trust.util.adapter.TreeListViewAdapter;
@@ -87,6 +88,8 @@ public class SimpleTreeListViewAdapter<T> extends TreeListViewAdapter<T> {
         node.getChildren().add(extraNode);
         mAllnodes.add(indexOf + 1, extraNode);
         mVisibleNodes = TreeHelper.filterVisibleNode(mAllnodes);
+        ParseHelper.addNewNode(extraNode);
+        ParseHelper.updateNode(node);
         notifyDataSetChanged();
     }
 

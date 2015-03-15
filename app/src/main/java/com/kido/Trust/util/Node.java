@@ -1,24 +1,32 @@
 package com.kido.Trust.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Node {
+    private String objectID="";
+    private String ownerID="";
     private Integer id;
     private Integer pid = 0; //根节点的Pid=0;没有父节点
-    private String name;
-    private String description;
+    private String name="";
+    private String description="";
+    private Date deadLine;
+    private Date arhiveDate;
+    private String userIdLastEdit="";
+    private Date lastEdit;
 
+
+    private Boolean publicNode=false;
+    private Boolean arhived=false;
     //树的层级
-//    private int level;
+    private int level=0;
     //当前 item的状态 是否展开
-    private boolean isExpand = false;
-
-    private int icon;
-
+    private boolean Expand = false;
+    private int icon=0;
     private Node parent;
     private List<Node> children = new ArrayList<Node>();
-
+    private List<String> usersID = new ArrayList<String>();
 
     public Node() {
         super();
@@ -31,6 +39,7 @@ public class Node {
         this.pid = pid;
         this.name = name;
     }
+
     public Node(int id, int pid, String name, String description) {
         super();
         this.id = id;
@@ -113,12 +122,12 @@ public class Node {
 //    }
 
     public boolean isExpand() {
-        return isExpand;
+        return Expand;
     }
 
-    public void setExpand(boolean isExpand) {
-        this.isExpand = isExpand;
-        if (!isExpand) {
+    public void setExpand(boolean Expand) {
+        this.Expand = Expand;
+        if ((!Expand)&&(children!=null)) {
             for (Node node : children) {
                 node.setExpand(false);
             }
@@ -126,6 +135,18 @@ public class Node {
 
         }
 
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public Date getLastEdit() {
+        return lastEdit;
+    }
+
+    public void setLastEdit(Date lastEdit) {
+        this.lastEdit = lastEdit;
     }
 
     public int getIcon() {
@@ -159,4 +180,77 @@ public class Node {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public String getOwnerID() {
+        return ownerID;
+    }
+
+    public void setOwnerID(String ownerID) {
+        this.ownerID = ownerID;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setPid(Integer pid) {
+        this.pid = pid;
+    }
+
+    public Date getDeadLine() {
+        return deadLine;
+    }
+
+    public void setDeadLine(Date deadLine) {
+        this.deadLine = deadLine;
+    }
+
+    public Date getArhiveDate() {
+        return arhiveDate;
+    }
+
+    public void setArhiveDate(Date arhiveDate) {
+        this.arhiveDate = arhiveDate;
+    }
+
+    public String getUserIdLastEdit() {
+        return userIdLastEdit;
+    }
+
+    public void setUserIdLastEdit(String userIdLastEdit) {
+        this.userIdLastEdit = userIdLastEdit;
+    }
+
+    public Boolean getPublicNode() {
+        return publicNode;
+    }
+
+    public void setPublicNode(Boolean publicNode) {
+        this.publicNode = publicNode;
+    }
+
+    public Boolean getArhived() {
+        return arhived;
+    }
+
+    public void setArhived(Boolean arhived) {
+        this.arhived = arhived;
+    }
+
+    public String getObjectID() {
+        return objectID;
+    }
+
+    public void setObjectID(String objectID) {
+        this.objectID = objectID;
+    }
+
+    public List<String> getUsersID() {
+        return usersID;
+    }
+
+    public void setUsersID(List<String> usersID) {
+        this.usersID = usersID;
+    }
+
 }
