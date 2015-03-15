@@ -2,7 +2,6 @@ package com.kido.Trust.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -10,9 +9,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.kido.Trust.R;
-import com.kido.Trust.parse.ParseHelper;
 import com.kido.Trust.util.Node;
-import com.kido.Trust.util.TreeHelper;
 import com.kido.Trust.util.adapter.TreeListViewAdapter;
 
 import java.util.List;
@@ -78,19 +75,20 @@ public class SimpleTreeListViewAdapter<T> extends TreeListViewAdapter<T> {
      * @param position
      * @param text
      */
-    public void addExtraNode(int position, String text, String desc) {
-        Node node = mVisibleNodes.get(position);
-        int indexOf = mAllnodes.indexOf(node);
-        Log.e("TAG", "--" + indexOf);
-        //Node extraNode = new Node(-1, node.getId(), text);
-        Node extraNode = new Node(mAllnodes.size() + 1, node.getId(), text, desc);
-        extraNode.setParent(node);
-        node.getChildren().add(extraNode);
-        mAllnodes.add(indexOf + 1, extraNode);
-        mVisibleNodes = TreeHelper.filterVisibleNode(mAllnodes);
-        ParseHelper.addNewNode(extraNode);
-        ParseHelper.updateNode(node);
-        notifyDataSetChanged();
+    public void addExtraNode(int position, String text) {
+//        Node node = mVisibleNodes.get(position);
+//        int indexOf = mAllnodes.indexOf(node);
+//        Log.e("TAG", "--" + indexOf);
+//        //Node extraNode = new Node(-1, node.getId(), text);
+//        Node extraNode = new Node(mAllnodes.size() + 1, node.getId(), text);
+//        extraNode.setParent(node);
+//        node.getChildren().add(extraNode);
+//        mAllnodes.add(indexOf + 1, extraNode);
+//        mVisibleNodes = TreeHelper.filterVisibleNode(mAllnodes);
+//        ParseHelper.addNewNode(extraNode);
+//        ParseHelper.updateNode(node);
+//        notifyDataSetChanged();
     }
+
 
 }

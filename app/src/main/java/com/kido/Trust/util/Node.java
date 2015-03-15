@@ -2,7 +2,6 @@ package com.kido.Trust.util;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class Node {
     private String objectID="";
@@ -15,8 +14,6 @@ public class Node {
     private Date arhiveDate;
     private String userIdLastEdit="";
     private Date lastEdit;
-
-
     private Boolean publicNode=false;
     private Boolean arhived=false;
     //树的层级
@@ -25,8 +22,8 @@ public class Node {
     private boolean Expand = false;
     private int icon=0;
     private Node parent;
-    private List<Node> children = new ArrayList<Node>();
-    private List<String> usersID = new ArrayList<String>();
+    private ArrayList<Node> children = new ArrayList<Node>();
+    private ArrayList<String> usersID = new ArrayList<String>();
 
     public Node() {
         super();
@@ -165,11 +162,11 @@ public class Node {
         this.parent = parent;
     }
 
-    public List<Node> getChildren() {
+    public ArrayList<Node> getChildren() {
         return children;
     }
 
-    public void setChildren(List<Node> children) {
+    public void setChildren(ArrayList<Node> children) {
         this.children = children;
     }
 
@@ -245,11 +242,11 @@ public class Node {
         this.objectID = objectID;
     }
 
-    public List<String> getUsersID() {
+    public ArrayList<String> getUsersID() {
         return usersID;
     }
 
-    public void setUsersID(List<String> usersID) {
+    public void setUsersID(ArrayList<String> usersID) {
         this.usersID = usersID;
     }
 

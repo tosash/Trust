@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
@@ -29,7 +31,6 @@ import com.kido.Trust.util.adapter.TreeListViewAdapter;
 import java.util.List;
 
 
-
 public class FragmentTreeList extends Fragment {
 
     private ListView mTree;
@@ -40,7 +41,7 @@ public class FragmentTreeList extends Fragment {
     private static final String TEXT_FRAGMENT = "TEXT_FRAGMENT";
     private Context context;
     ProgressDialog mProgressDialog;
-
+    ParseHelper parse;
 
     public FragmentTreeList newInstance(String text) {
         FragmentTreeList mFragment = new FragmentTreeList();
@@ -48,13 +49,34 @@ public class FragmentTreeList extends Fragment {
         mBundle.putString(TEXT_FRAGMENT, text);
         mFragment.setArguments(mBundle);
         return mFragment;
+
     }
+
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    showNodes((List<Node>) msg.obj);
+                    mProgressDialog.dismiss();
+                    break;
+                case 0:
+
+                    break;
+                default:
+                    break;
+            }
+
+            return false;
+        }
+    }
+    );
 
     @Override
     public void onAttach(Activity activity) {
-        // TODO Auto-generated method stub
         super.onAttach(activity);
         context = activity;
+        parse = new ParseHelper(context,handler);
     }
 
 
@@ -64,12 +86,27 @@ public class FragmentTreeList extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_treelist, container, false);
         mTree = (ListView) rootView.findViewById(com.kido.Trust.R.id.id_listview);
-        ParseHelper.getAllNodes(this);
+        OpenProgressDialog();
+        parse.getAllNodes();
         rootView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         return rootView;
     }
 
-    public void showNodes(List<Node> nodes){
+    public void OpenProgressDialog() {
+        mProgressDialog = new ProgressDialog(context);
+        mProgressDialog.setTitle("Подождите...");
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setCancelable(true);
+        mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                parse.setIsRunning(false);
+            }
+        });
+        mProgressDialog.show();
+    }
+
+    public void showNodes(List<Node> nodes) {
         // Pass the results into ListViewAdapter.java
         try {
             nodeAdapter = new SimpleTreeListViewAdapter<Node>(mTree, context, nodes, 0);
@@ -81,52 +118,6 @@ public class FragmentTreeList extends Fragment {
             e.printStackTrace();
         }
     }
-
-//    // RemoteDataTask AsyncTask
-//    private class RemoteDataTask extends AsyncTask<Void, Void, Void> {
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            // Create a progressdialog
-//            mProgressDialog = new ProgressDialog(context);
-//            // Set progressdialog title
-//            mProgressDialog.setTitle("Соединение с сервером");
-//            // Set progressdialog message
-//            mProgressDialog.setMessage("Загрузка...");
-//            mProgressDialog.setIndeterminate(false);
-//            // Show progressdialog
-//            mProgressDialog.show();
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Void... params) {
-//
-//
-//                @Override
-//                public void done(List<ParseObject> parseObjects, com.parse.ParseException e) {
-//                    Log.d("score", "DONE!!!!!!!!");
-//                }
-//            });
-//
-//
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void result) {
-//            // Pass the results into ListViewAdapter.java
-//            try {
-//                nodeAdapter = new SimpleTreeListViewAdapter<Node>(mTree, context, nodeList, 0);
-//            } catch (IllegalAccessException e) {
-//                Log.e("Error", e.getMessage());
-//                e.printStackTrace();
-//            }
-//            // Binds the Adapter to the ListView
-//            mTree.setAdapter(nodeAdapter);
-//            // Close the progressdialog
-//            mProgressDialog.dismiss();
-//        }
-//    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -219,12 +210,17 @@ public class FragmentTreeList extends Fragment {
                         if (TextUtils.isEmpty(editText.getText().toString())) {
                             return;
                         }
-                        nodeAdapter.addExtraNode(position, editText.getText().toString(), editText.getText().toString());
+                        nodeAdapter.addExtraNode(position, editText.getText().toString());
                     }
                 }).setNegativeButton("No", null).show();
                 return true;
             }
         });
+    }
+
+    public void addNewNode(int position,String name,String description){
+
+        nodeAdapter.addExtraNode(position, name);
     }
 
 

@@ -49,7 +49,8 @@ public class MainActivity extends NavigationLiveo implements NavigationLiveoList
 
     @Override
     public void onInt(Bundle savedInstanceState) {
-        ParseHelper.initParse(this);
+        ParseHelper mParse = new ParseHelper(this,null);
+        mParse.initParse();
         //Creation of the list items is here
 
         // set listener {required}
