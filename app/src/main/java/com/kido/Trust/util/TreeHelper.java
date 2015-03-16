@@ -54,7 +54,7 @@ public class TreeHelper {
                     desc = (String) field.get(t);
                 }
             }
-            node = new Node(id, pid, label, desc);
+            node = new Node(id, pid, label);
             nodes.add(node);
         }
         /**

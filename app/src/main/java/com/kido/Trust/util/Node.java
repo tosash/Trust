@@ -2,6 +2,7 @@ package com.kido.Trust.util;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Node {
     private String objectID="";
@@ -22,8 +23,8 @@ public class Node {
     private boolean Expand = false;
     private int icon=0;
     private Node parent;
-    private ArrayList<Node> children = new ArrayList<Node>();
-    private ArrayList<String> usersID = new ArrayList<String>();
+    private List<Node> children = new ArrayList<Node>();
+    private List<String> usersID = new ArrayList<String>();
 
     public Node() {
         super();
@@ -162,11 +163,11 @@ public class Node {
         this.parent = parent;
     }
 
-    public ArrayList<Node> getChildren() {
+    public List<Node> getChildren() {
         return children;
     }
 
-    public void setChildren(ArrayList<Node> children) {
+    public void setChildren(List<Node> children) {
         this.children = children;
     }
 
@@ -242,11 +243,11 @@ public class Node {
         this.objectID = objectID;
     }
 
-    public ArrayList<String> getUsersID() {
+    public List<String> getUsersID() {
         return usersID;
     }
 
-    public void setUsersID(ArrayList<String> usersID) {
+    public void setUsersID(List<String> usersID) {
         this.usersID = usersID;
     }
 

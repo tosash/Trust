@@ -56,11 +56,11 @@ public class FragmentTreeList extends Fragment {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
-                case 1:
+                case ParseHelper.GET_ALL_NODES:
                     showNodes((List<Node>) msg.obj);
                     mProgressDialog.dismiss();
                     break;
-                case 0:
+                case ParseHelper.ERROR_PARSE:
 
                     break;
                 default:

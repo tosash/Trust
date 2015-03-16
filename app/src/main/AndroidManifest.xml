@@ -35,6 +35,9 @@
         <activity
             android:name="com.kido.Trust.SettingsActivity"
             android:label="@string/settings"></activity>
+        <activity
+            android:name="com.kido.Trust.LoginActivity"
+            android:label=""></activity>
 
     </application>
 

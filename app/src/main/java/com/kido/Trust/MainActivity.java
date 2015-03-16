@@ -25,12 +25,15 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.kido.Trust.parse.ParseHelper;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import br.liveo.interfaces.NavigationLiveoListener;
 import br.liveo.navigationliveo.NavigationLiveo;
+
+import static com.kido.Trust.parse.ParseHelper.isUserLoggedIn;
 
 
 public class MainActivity extends NavigationLiveo implements NavigationLiveoListener {
@@ -40,8 +43,8 @@ public class MainActivity extends NavigationLiveo implements NavigationLiveoList
     @Override
     public void onUserInformation() {
         //User information here
-        this.mUserName.setText("Test User");
-        this.mUserEmail.setText("rudsonlive@gmail.com");
+        this.mUserName.setText("");
+        this.mUserEmail.setText("");
 //        this.mUserPhoto.setImageResource(R.drawable.ic_rudsonlive);
         this.mUserBackground.setImageResource(R.drawable.ic_user_background);
     }
@@ -49,8 +52,7 @@ public class MainActivity extends NavigationLiveo implements NavigationLiveoList
 
     @Override
     public void onInt(Bundle savedInstanceState) {
-        ParseHelper mParse = new ParseHelper(this,null);
-        mParse.initParse();
+
         //Creation of the list items is here
 
         // set listener {required}
@@ -89,7 +91,20 @@ public class MainActivity extends NavigationLiveo implements NavigationLiveoList
         this.setFooterInformationDrawer(R.string.settings, R.drawable.ic_settings_black_24dp);
 
         this.setNavigationAdapter(mListNameItem, mListIconItem, mListHeaderItem, mSparseCounterItem);
+
+
+        ParseHelper mParse = new ParseHelper(this, null);
+        mParse.initParse();
+        ParseUser.logOut();
+        boolean loggedIn = isUserLoggedIn();
+        if (!loggedIn)
+            startActivity(new Intent(this, LoginActivity.class));
+        else {
+            mUserName.setText(ParseUser.getCurrentUser().getUsername());
+            mUserEmail.setText(ParseUser.getCurrentUser().getEmail());
+        }
     }
+
 
     @Override
     public void onItemClickNavigation(int position, int layoutContainerId) {
@@ -146,6 +161,7 @@ public class MainActivity extends NavigationLiveo implements NavigationLiveoList
     public void onClickFooterItemNavigation(View v) {
         //footer onClick
         startActivity(new Intent(this, SettingsActivity.class));
+
     }
 
 
