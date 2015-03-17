@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.kido.Trust;
+package com.kido.Trust.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -28,6 +28,8 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.kido.Trust.R;
 
 public class FragmentMain extends Fragment {
 

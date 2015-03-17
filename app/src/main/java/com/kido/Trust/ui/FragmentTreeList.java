@@ -1,4 +1,4 @@
-package com.kido.Trust;
+package com.kido.Trust.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -23,10 +23,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.kido.Trust.R;
 import com.kido.Trust.adapter.SimpleTreeListViewAdapter;
+import com.kido.Trust.adapter.TreeListViewAdapter;
 import com.kido.Trust.parse.ParseHelper;
 import com.kido.Trust.util.Node;
-import com.kido.Trust.util.adapter.TreeListViewAdapter;
 
 import java.util.List;
 
@@ -76,7 +77,7 @@ public class FragmentTreeList extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         context = activity;
-        parse = new ParseHelper(context,handler);
+        parse = new ParseHelper(context, handler);
     }
 
 
@@ -218,7 +219,7 @@ public class FragmentTreeList extends Fragment {
         });
     }
 
-    public void addNewNode(int position,String name,String description){
+    public void addNewNode(int position, String name, String description) {
 
         nodeAdapter.addExtraNode(position, name);
     }

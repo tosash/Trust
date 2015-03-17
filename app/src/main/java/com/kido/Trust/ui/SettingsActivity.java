@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.kido.Trust;
+package com.kido.Trust.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import com.kido.Trust.R;
 
 public class SettingsActivity extends ActionBarActivity {
 

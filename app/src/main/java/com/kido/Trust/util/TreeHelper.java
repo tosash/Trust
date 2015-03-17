@@ -3,12 +3,7 @@ package com.kido.Trust.util;
 import android.util.Log;
 
 import com.kido.Trust.R;
-import com.kido.Trust.utilannotation.TreeNodeDescription;
-import com.kido.Trust.utilannotation.TreeNodeLabel;
-import com.kido.Trust.utilannotation.TreeNodePid;
-import com.kido.Trust.utilannotation.TreeNodeid;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,61 +19,27 @@ public class TreeHelper {
      * @throws IllegalArgumentException
      */
 
-    public static <T> List<Node> convertDat2Nodes(List<T> data) throws IllegalArgumentException, IllegalAccessException {
-        List<Node> nodes = new ArrayList<Node>();
-        Node node = null;
-        for (T t : data) {
-            int id = -1;
-            int pid = -1;
-            String label = null;
-            String desc = null;
-            node = new Node();
-            Class clazz = t.getClass();
-            Field[] filds = clazz.getDeclaredFields();
-            for (Field field : filds) {
-                //判断注解
-                if (field.getAnnotation(TreeNodeid.class) != null) {
-                    field.setAccessible(true);
-                    id = field.getInt(t);
-                }
-                if (field.getAnnotation(TreeNodePid.class) != null) {
-                    field.setAccessible(true);
-                    pid = field.getInt(t);
-                }
-                if (field.getAnnotation(TreeNodeLabel.class) != null) {
-                    field.setAccessible(true);
-                    label = (String) field.get(t);
-                }
-                if (field.getAnnotation(TreeNodeDescription.class) != null) {
-                    field.setAccessible(true);
-                    desc = (String) field.get(t);
-                }
-            }
-            node = new Node(id, pid, label);
-            nodes.add(node);
-        }
-        /**
-         * 设置node间的节点关系
-         */
-        for (int i = 0; i < nodes.size(); i++) {
-            Node n = nodes.get(i);
-            for (int j = i + 1; j < nodes.size(); j++) {
-                Node m = nodes.get(j);
-                if (m.getPid() == n.getId()) {
+    public static List<Node> convertDat2Nodes(List<Node> data) {
+        for (int i = 0; i < data.size(); i++) {
+            Node n = data.get(i);
+            for (int j = i + 1; j < data.size(); j++) {
+                Node m = data.get(j);
+
+                if (m.getPid().equals(n.getId())) {
                     n.getChildren().add(m);
                     m.setParent(n);
-                } else if (m.getId() == n.getPid()) {
+                } else if (m.getId().equals(n.getPid())) {
                     m.getChildren().add(n);
                     n.setParent(m);
                 }
             }
         }
 
-        for (Node n : nodes) {
+        for (Node n : data) {
             setNodeIcon(n);
         }
-        Log.e("TAG", nodes.size() + "");
-        return nodes;
+        Log.e("TAG", data.size() + "");
+        return data;
     }
 
     /**
@@ -87,7 +48,7 @@ public class TreeHelper {
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      */
-    public static <T> List<Node> getSortedNodes(List<T> datas, int defaultExpandLevel) throws IllegalArgumentException, IllegalAccessException {
+    public static <T> List<Node> getSortedNodes(List<Node> datas, int defaultExpandLevel) {
         List<Node> result = new ArrayList<Node>();
         List<Node> nodes = convertDat2Nodes(datas);
         //获取树的根节点

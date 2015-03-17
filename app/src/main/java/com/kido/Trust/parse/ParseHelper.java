@@ -74,15 +74,14 @@ public class ParseHelper {
         Node map = new Node();
         map.setObjectID(obj.getObjectId());
         map.setOwnerID(obj.getString("ownerID"));
-        map.setId(obj.getInt("nid"));
-        map.setPid(obj.getInt("pid"));
+        map.setId(obj.getObjectId());
+        map.setPid(obj.getString("pid"));
         map.setName(obj.getString("name"));
         map.setDescription(obj.getString("description"));
-        map.setParent((Node) obj.get("parent"));
-        List<Node> temples = (List<Node>) obj.get("children");
-        map.setChildren(temples == null ? new ArrayList<Node>() : temples);
-        List<String> tempos = (List<String>) obj.get("usersID");
-        map.setUsersID(tempos == null ? new ArrayList<String>() : tempos);
+//        map.setParent(null);
+//        map.setChildren(null);
+//        List<String> tempos = (List<String>) obj.get("usersID");
+//        map.setUsersID(tempos == null ? new ArrayList<String>() : tempos);
         map.setUserIdLastEdit(obj.getString("userIdLastEdit"));
         map.setLastEdit(obj.getUpdatedAt());
         map.setArhived(obj.getBoolean("arhived"));
@@ -97,27 +96,7 @@ public class ParseHelper {
     public List<Node> parseToNodeS(List<ParseObject> ob) {
         List<Node> nodeList = new ArrayList<Node>();
         for (ParseObject node : ob) {
-            Node map = new Node();
-            map.setObjectID(node.getObjectId());
-            map.setOwnerID(node.getString("ownerID"));
-            map.setId(node.getInt("nid"));
-            map.setPid(node.getInt("pid"));
-            map.setName(node.getString("name"));
-            map.setDescription(node.getString("description"));
-            map.setParent((Node) node.get("parent"));
-            List<Node> temples = (List<Node>) node.get("children");
-            map.setChildren(temples == null ? new ArrayList<Node>() : temples);
-            List<String> tempos = (List<String>) node.get("usersID");
-            map.setUsersID(tempos == null ? new ArrayList<String>() : tempos);
-            map.setUserIdLastEdit(node.getString("userIdLastEdit"));
-            map.setLastEdit(node.getUpdatedAt());
-            map.setArhived(node.getBoolean("arhived"));
-            map.setArhiveDate(node.getDate("arhiveDate"));
-            map.setDeadLine(node.getDate("deadLine"));
-            map.setPublicNode(node.getBoolean("publicNode"));
-            map.setLevel(node.getInt("level"));
-            map.setExpand(node.getBoolean("expand"));
-            nodeList.add(map);
+            nodeList.add(parseToNode(node));
         }
         return nodeList;
     }

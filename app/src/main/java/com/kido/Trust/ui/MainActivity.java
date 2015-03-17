@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.kido.Trust;
+package com.kido.Trust.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,8 +24,8 @@ import android.support.v4.app.FragmentManager;
 import android.util.SparseIntArray;
 import android.view.Menu;
 import android.view.View;
-import android.widget.Toast;
 
+import com.kido.Trust.R;
 import com.kido.Trust.parse.ParseHelper;
 import com.parse.ParseUser;
 
@@ -45,7 +47,7 @@ public class MainActivity extends NavigationLiveo implements NavigationLiveoList
         //User information here
         this.mUserName.setText("");
         this.mUserEmail.setText("");
-//        this.mUserPhoto.setImageResource(R.drawable.ic_rudsonlive);
+        this.mUserPhoto.setImageResource(R.drawable.ic_no_user);
         this.mUserBackground.setImageResource(R.drawable.ic_user_background);
     }
 
@@ -95,16 +97,35 @@ public class MainActivity extends NavigationLiveo implements NavigationLiveoList
 
         ParseHelper mParse = new ParseHelper(this, null);
         mParse.initParse();
-        ParseUser.logOut();
+        loginUser();
+    }
+
+    public void loginUser() {
         boolean loggedIn = isUserLoggedIn();
         if (!loggedIn)
             startActivity(new Intent(this, LoginActivity.class));
         else {
             mUserName.setText(ParseUser.getCurrentUser().getUsername());
-            mUserEmail.setText(ParseUser.getCurrentUser().getEmail());
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(R.string.exit_title)
+                .setMessage(R.string.exit_quetion)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+//                        System.exit(RESULT_OK);
+                        finishAffinity();
+                    }
+
+                })
+                .setNegativeButton(R.string.no, null)
+                .show();
+    }
 
     @Override
     public void onItemClickNavigation(int position, int layoutContainerId) {
@@ -153,8 +174,20 @@ public class MainActivity extends NavigationLiveo implements NavigationLiveoList
 
     @Override
     public void onClickUserPhotoNavigation(View v) {
-        //user photo onClick
-        Toast.makeText(this, R.string.open_user_profile, Toast.LENGTH_SHORT).show();
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(R.string.log_out_title)
+                .setMessage(R.string.log_out_quetion)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ParseUser.logOut();
+                        loginUser();
+                    }
+
+                })
+                .setNegativeButton(R.string.no, null)
+                .show();
     }
 
     @Override

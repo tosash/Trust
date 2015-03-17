@@ -5,23 +5,23 @@ import java.util.Date;
 import java.util.List;
 
 public class Node {
-    private String objectID="";
-    private String ownerID="";
-    private Integer id;
-    private Integer pid = 0; //根节点的Pid=0;没有父节点
-    private String name="";
-    private String description="";
+    private String objectID = "";
+    private String ownerID = "";
+    private String id;
+    private String pid = "0"; //根节点的Pid=0;没有父节点
+    private String name = "";
+    private String description = "";
     private Date deadLine;
     private Date arhiveDate;
-    private String userIdLastEdit="";
+    private String userIdLastEdit = "";
     private Date lastEdit;
-    private Boolean publicNode=false;
-    private Boolean arhived=false;
+    private Boolean publicNode = false;
+    private Boolean arhived = false;
     //树的层级
-    private int level=0;
+    private int level = 0;
     //当前 item的状态 是否展开
     private boolean Expand = false;
-    private int icon=0;
+    private int icon = 0;
     private Node parent;
     private List<Node> children = new ArrayList<Node>();
     private List<String> usersID = new ArrayList<String>();
@@ -31,14 +31,14 @@ public class Node {
     }
 
 
-    public Node(int id, int pid, String name) {
+    public Node(String id, String pid, String name) {
         super();
         this.id = id;
         this.pid = pid;
         this.name = name;
     }
 
-    public Node(int id, int pid, String name, String description) {
+    public Node(String id, String pid, String name, String description) {
         super();
         this.id = id;
         this.pid = pid;
@@ -81,19 +81,19 @@ public class Node {
     }
 
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getPid() {
+    public String getPid() {
         return pid;
     }
 
-    public void setPid(int pid) {
+    public void setPid(String pid) {
         this.pid = pid;
     }
 
@@ -115,17 +115,13 @@ public class Node {
         return parent == null ? 0 : parent.getLevel() + 1;
     }
 
-//    public void setLevel(int level) {
-//        this.level = level;
-//    }
-
     public boolean isExpand() {
         return Expand;
     }
 
     public void setExpand(boolean Expand) {
         this.Expand = Expand;
-        if ((!Expand)&&(children!=null)) {
+        if ((!Expand) && (children != null)) {
             for (Node node : children) {
                 node.setExpand(false);
             }
@@ -185,14 +181,6 @@ public class Node {
 
     public void setOwnerID(String ownerID) {
         this.ownerID = ownerID;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setPid(Integer pid) {
-        this.pid = pid;
     }
 
     public Date getDeadLine() {

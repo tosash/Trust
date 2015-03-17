@@ -1,4 +1,4 @@
-package com.kido.Trust.util.adapter;
+package com.kido.Trust.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -36,10 +36,9 @@ public abstract class TreeListViewAdapter<T> extends BaseAdapter {
         this.mLister = mLister;
     }
 
-    public TreeListViewAdapter(ListView tree, Context context, List<T> datas, int defaultExpandLevel) throws IllegalArgumentException, IllegalAccessException {
+    public TreeListViewAdapter(ListView tree, Context context, List<Node> datas, int defaultExpandLevel) {
         mContext = context;
-//        mAllnodes = TreeHelper.getSortedNodes(datas, defaultExpandLevel);
-        mAllnodes = (List<Node>) datas;
+        mAllnodes = TreeHelper.getSortedNodes(datas, defaultExpandLevel);
         mVisibleNodes = TreeHelper.filterVisibleNode(mAllnodes);
         mInflater = LayoutInflater.from(mContext);
         mTree = tree;

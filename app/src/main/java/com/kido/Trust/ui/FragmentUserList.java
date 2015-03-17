@@ -1,4 +1,4 @@
-package com.kido.Trust;
+package com.kido.Trust.ui;
 
 import android.content.Context;
 import android.os.Bundle;

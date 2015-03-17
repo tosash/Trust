@@ -10,14 +10,13 @@ import android.widget.TextView;
 
 import com.kido.Trust.R;
 import com.kido.Trust.util.Node;
-import com.kido.Trust.util.adapter.TreeListViewAdapter;
 
 import java.util.List;
 
 public class SimpleTreeListViewAdapter<T> extends TreeListViewAdapter<T> {
 
     public SimpleTreeListViewAdapter(ListView tree, Context context,
-                                     List<T> datas, int defaultExpandLevel)
+                                     List<Node> datas, int defaultExpandLevel)
             throws IllegalArgumentException, IllegalAccessException {
         super(tree, context, datas, defaultExpandLevel);
     }

@@ -1,6 +1,8 @@
-package com.kido.Trust;
+package com.kido.Trust.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -9,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.kido.Trust.R;
 import com.kido.Trust.parse.ParseErrorResolver;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
@@ -28,6 +31,8 @@ public class LoginActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(android.R.style.Theme_DeviceDefault_Light_Dialog);
+        setFinishOnTouchOutside(false);
         setContentView(R.layout.activity_login);
         usernameEdit = (EditText) findViewById(R.id.login_username);
         passwordEdit = (EditText) findViewById(R.id.login_password);
@@ -36,6 +41,26 @@ public class LoginActivity extends Activity {
         todoListActivityIntent = new Intent(this, FragmentTreeList.class);
         parseErrResolver = new ParseErrorResolver();
     }
+
+    @Override
+    public void onBackPressed() {
+        // prevent "back" from leaving this activity
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(R.string.exit_title)
+                .setMessage(R.string.exit_quetion)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+//                        System.exit(RESULT_OK);
+                        finishAffinity();
+                    }
+
+                })
+                .setNegativeButton(R.string.no, null)
+                .show();
+    }
+
 
     public void onButtonClicked(final View v) {
         String user = usernameEdit.getText().toString();
@@ -46,23 +71,20 @@ public class LoginActivity extends Activity {
             perror(this.getString(R.string.password_missing));
 
         else if (v == signInButton) {
-            signIn(v, user, pass, todoListActivityIntent);
+            signIn(v, user, pass);
         } else if (v == signUpButton) {
-            signUp(v, user, pass, todoListActivityIntent);
+            signUp(v, user, pass);
         }
     }
 
-    private void signIn(final View viewToToggle, String user, String pass, final Intent intentToGo) {
+    private void signIn(final View viewToToggle, String user, String pass) {
         viewToToggle.setEnabled(false);
         ParseUser.logInInBackground(user, pass, new LogInCallback() {
             @Override
             public void done(ParseUser user, ParseException e) {
                 viewToToggle.setEnabled(true);
                 if (user != null) {
-                    if (intentToGo != null) {
-                        startActivity(intentToGo);
-                        finish();
-                    }
+                    finish();
                 } else {
                     perror(parseErrResolver.resolve(LoginActivity.this, e));
                 }
@@ -70,7 +92,7 @@ public class LoginActivity extends Activity {
         });
     }
 
-    private void signUp(final View viewToToggle, String user, String pass, final Intent intentToGo) {
+    private void signUp(final View viewToToggle, String user, String pass) {
         viewToToggle.setEnabled(false);
         ParseUser paUser = new ParseUser();
         paUser.setUsername(user);
@@ -81,9 +103,6 @@ public class LoginActivity extends Activity {
             public void done(ParseException e) {
                 viewToToggle.setEnabled(true);
                 if (e == null) {
-                    if (intentToGo != null) {
-                        startActivity(intentToGo);
-                    }
                     finish();
                 } else {
                     perror(parseErrResolver.resolve(LoginActivity.this, e));
@@ -91,6 +110,7 @@ public class LoginActivity extends Activity {
             }
         });
     }
+
 
     protected void perror(String msg) {
         if (toast != null) toast.cancel();

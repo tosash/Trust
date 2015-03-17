@@ -26,14 +26,20 @@
     <string name="username">Почта:</string>
     <string name="sign_up">Регистрация</string>
     <string name="password">Пароль:</string>
-    <string name="sign_in">Войти</string>
-    <string name="username_taken">Такой пользователь зарегестрирован. Попробуйте ввести другие данные.</string>
-    <string name="username_missing">Укажите почту.</string>
-    <string name="password_missing">Укажите пароль.</string>
-    <string name="object_not_found">Не верные данные.</string>
-    <string name="connection_failed">Не удалось установить соединение.</string>
-    <string name="connection_timeout">Время ожидания соединения истекло. </string>
+    <string name="sign_in">Вход</string>
+    <string name="username_taken">Такой пользователь зарегестрирован. Попробуйте ввести другие данные</string>
+    <string name="username_missing">Укажите почту</string>
+    <string name="password_missing">Укажите пароль</string>
+    <string name="object_not_found">Не верные данные</string>
+    <string name="connection_failed">Не удалось установить соединение</string>
+    <string name="connection_timeout">Время ожидания соединения истекло </string>
     <string name="connection_unknown_error">Неизвестная ошибка соединения</string>
+    <string name="log_out_title">Смена пользователя</string>
+    <string name="log_out_quetion">Выйти из системы?</string>
+    <string name="exit_title">Выход</string>
+    <string name="exit_quetion">Закрыть программу?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
     <string name="app_id">0HX9UqA5qO2EJb3sDMhaBEpq1zqjb0FYq7iC5FnS</string>
     <string name="client_key">0DN694vFCXSpD0LGjFugycNTZjj9cYjzoIRbNCLQ</string>
     <!-- Toast -->
