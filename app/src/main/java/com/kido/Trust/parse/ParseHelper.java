@@ -139,7 +139,7 @@ public class ParseHelper {
                     Log.d("getAllNodes", "Retrieved " + ob.size() + " nodes");
                     Message msg = new Message();
                     msg.what = GET_ALL_NODES;
-                    msg.obj = parseToNodeS(ob);
+                    msg.obj = parseToNodeS(ob);//
                     handler.sendMessage(msg);
                 } else {
                     Message msg = new Message();
