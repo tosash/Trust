@@ -1,6 +1,7 @@
 package com.kido.Trust.parse;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -11,11 +12,15 @@ import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseACL;
+import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,9 +66,10 @@ public class ParseHelper {
         this.handler = handler;
     }
 
-    public void initParse() {
+    public void initParse(Intent intent) {
         Parse.initialize(context, context.getString(R.string.app_id), context.getString(R.string.client_key));
         ParseACL.setDefaultACL(new ParseACL(), true);
+        ParseAnalytics.trackAppOpened(intent);
     }
 
     public static boolean isUserLoggedIn() {
@@ -72,7 +78,6 @@ public class ParseHelper {
 
     public Node parseToNode(ParseObject obj) {
         Node map = new Node();
-        map.setObjectID(obj.getObjectId());
         map.setOwnerID(obj.getString("ownerID"));
         map.setId(obj.getObjectId());
         map.setPid(obj.getString("pid"));
@@ -131,7 +136,8 @@ public class ParseHelper {
 
     public void getAllNodes() {
         setIsRunning(true);
-        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Node");
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Node");
+        query.whereEqualTo("usersId", ParseUser.getCurrentUser());
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> ob, ParseException e) {
@@ -156,34 +162,33 @@ public class ParseHelper {
     }
 
 
-    public void addNewNode(Node newNode) {
-        setIsRunning(true);
+    public void addNewNode(Node newNode, final int position) {
         final ParseObject node = new ParseObject("Node");
-        node.put("ownerID", newNode.getOwnerID());
-        node.put("nid", newNode.getId());
+
+        ParseUser user = ParseUser.getCurrentUser();
+        ParseRelation relation = node.getRelation("usersId");
+        relation.add(user);
+
+        node.put("ownerID", user.getObjectId());
         node.put("pid", newNode.getPid());
         node.put("name", newNode.getName());
         node.put("description", newNode.getDescription());
-
-//        ParseObject object = new ParseObject();
-//        node.put("parent",(Node) newNode.getParent()
-        node.put("children", newNode.getChildren());
-        node.put("usersID", newNode.getUsersID());
-        node.put("userIdLastEdit", newNode.getUserIdLastEdit());
+        node.put("userIdLastEdit", user.getObjectId());
         node.put("arhived", newNode.getArhived());
-//        node.put("arhiveDate",newNode.getArhiveDate());
-//        node.put("deadLine", newNode.getDeadLine());
+        node.put("arhiveDate", (newNode.getArhiveDate()==null? JSONObject.NULL:newNode.getArhiveDate()));
+        node.put("deadLine", (newNode.getDeadLine()==null? JSONObject.NULL:newNode.getDeadLine()));
         node.put("publicNode", newNode.getPublicNode());
         node.put("level", newNode.getLevel());
         node.put("expand", newNode.isExpand());
         node.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                if (e == null && getIsRunning()) {
+                if (e == null) {
                     Log.d("AddNewNode", "added node " + node.getObjectId());
                     Message msg = new Message();
                     msg.what = ADD_NEW_NODE;
-                    msg.obj = node.getObjectId();
+                    msg.arg1=position;
+                    msg.obj = parseToNode(node);
                     handler.sendMessage(msg);
                 } else {
                     Message msg = new Message();
@@ -199,24 +204,24 @@ public class ParseHelper {
     }
 
     public static void updateNode(final Node newNode) {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Node");
-// Retrieve the object by id
-        query.getInBackground(newNode.getObjectID(), new GetCallback<ParseObject>() {
-            public void done(ParseObject node, ParseException e) {
-                if (e == null) {
-                    node.put("nid", newNode.getId());
-                    node.put("pid", newNode.getPid());
-//                    node.put("parent",newNode.getParent());
-                    List<Node> childrens = new ArrayList<Node>();
-                    childrens = (List<Node>) newNode.getChildren();
-                    node.put("children", newNode.getChildren());
-                    node.put("userIdLastEdit", newNode.getUserIdLastEdit());
-                    node.put("level", newNode.getLevel());
-                    node.put("expand", newNode.isExpand());
-                    node.saveInBackground();
-                }
-            }
-        });
+//        ParseQuery<ParseObject> query = ParseQuery.getQuery("Node");
+//// Retrieve the object by id
+//        query.getInBackground(newNode.getObjectID(), new GetCallback<ParseObject>() {
+//            public void done(ParseObject node, ParseException e) {
+//                if (e == null) {
+//                    node.put("nid", newNode.getId());
+//                    node.put("pid", newNode.getPid());
+////                    node.put("parent",newNode.getParent());
+//                    List<Node> childrens = new ArrayList<Node>();
+//                    childrens = (List<Node>) newNode.getChildren();
+//                    node.put("children", newNode.getChildren());
+//                    node.put("userIdLastEdit", newNode.getUserIdLastEdit());
+//                    node.put("level", newNode.getLevel());
+//                    node.put("expand", newNode.isExpand());
+//                    node.saveInBackground();
+//                }
+//            }
+//        });
     }
 
     public Boolean getIsRunning() {

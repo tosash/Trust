@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 public class Node {
-    private String objectID = "";
     private String ownerID = "";
     private String id;
     private String pid = "0"; //根节点的Pid=0;没有父节点
@@ -38,12 +37,12 @@ public class Node {
         this.name = name;
     }
 
-    public Node(String id, String pid, String name, String description) {
+    public Node(String id, String pid, String name, List<String> users) {
         super();
         this.id = id;
         this.pid = pid;
         this.name = name;
-        this.description = description;
+        this.usersID = users;
     }
 
 
@@ -223,13 +222,6 @@ public class Node {
         this.arhived = arhived;
     }
 
-    public String getObjectID() {
-        return objectID;
-    }
-
-    public void setObjectID(String objectID) {
-        this.objectID = objectID;
-    }
 
     public List<String> getUsersID() {
         return usersID;

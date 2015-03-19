@@ -89,7 +89,6 @@ public class FragmentMain extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // TODO Auto-generated method stub
-
         switch (item.getItemId()) {
 
             case R.id.menu_add:
@@ -118,4 +117,6 @@ public class FragmentMain extends Fragment {
             return false;
         }
     };
+
+
 }

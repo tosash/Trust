@@ -11,7 +11,6 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,10 +23,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.kido.Trust.R;
-import com.kido.Trust.adapter.SimpleTreeListViewAdapter;
 import com.kido.Trust.adapter.TreeListViewAdapter;
 import com.kido.Trust.parse.ParseHelper;
 import com.kido.Trust.util.Node;
+import com.parse.ParseException;
 
 import java.util.List;
 
@@ -35,7 +34,8 @@ import java.util.List;
 public class FragmentTreeList extends Fragment {
 
     private ListView mTree;
-    private SimpleTreeListViewAdapter<Node> nodeAdapter;
+    //    private SimpleTreeListViewAdapter<Node> nodeAdapter;
+    private TreeListViewAdapter<Node> nodeAdapter;
     private List<Node> nodeList = null;
 
     private boolean mSearchCheck;
@@ -59,10 +59,12 @@ public class FragmentTreeList extends Fragment {
             switch (msg.what) {
                 case ParseHelper.GET_ALL_NODES:
                     showNodes((List<Node>) msg.obj);
+                    initEvent();
                     mProgressDialog.dismiss();
                     break;
                 case ParseHelper.ERROR_PARSE:
-
+                    Toast.makeText(context, ((ParseException) msg.obj).getMessage(), Toast.LENGTH_SHORT).show();
+                    mProgressDialog.dismiss();
                     break;
                 default:
                     break;
@@ -109,15 +111,10 @@ public class FragmentTreeList extends Fragment {
 
     public void showNodes(List<Node> nodes) {
         // Pass the results into ListViewAdapter.java
-        try {
-            nodeAdapter = new SimpleTreeListViewAdapter<Node>(mTree, context, nodes, 0);
-            // Binds the Adapter to the ListView
-            mTree.setAdapter(nodeAdapter);
-            initEvent();
-        } catch (IllegalAccessException e) {
-            Log.d("Adapter", "Error: " + e.getMessage());
-            e.printStackTrace();
-        }
+        //            nodeAdapter = new SimpleTreeListViewAdapter<Node>(mTree, context, nodes, 0);
+        nodeAdapter = new TreeListViewAdapter<Node>(mTree, context, nodes, 0);
+        // Binds the Adapter to the ListView
+        mTree.setAdapter(nodeAdapter);
     }
 
     @Override
@@ -156,7 +153,20 @@ public class FragmentTreeList extends Fragment {
         switch (item.getItemId()) {
 
             case R.id.menu_add:
-                Toast.makeText(getActivity(), R.string.add, Toast.LENGTH_SHORT).show();
+                final EditText editText = new EditText(getActivity());
+                new AlertDialog.Builder(getActivity()).setTitle(R.string.new_title)
+                        .setView(editText).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if (TextUtils.isEmpty(editText.getText().toString())) {
+                            return;
+                        }
+
+                        nodeAdapter.addRootNode(editText.getText().toString());
+                    }
+                }).setNegativeButton(R.string.no, null).show();
                 break;
 
             case R.id.menu_search:
@@ -202,8 +212,8 @@ public class FragmentTreeList extends Fragment {
                                            final int position, long id) {
                 final EditText editText = new EditText(context);
 
-                new AlertDialog.Builder(context).setTitle("Add node")
-                        .setView(editText).setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                new AlertDialog.Builder(context).setTitle(R.string.new_title)
+                        .setView(editText).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -213,13 +223,13 @@ public class FragmentTreeList extends Fragment {
                         }
                         nodeAdapter.addExtraNode(position, editText.getText().toString());
                     }
-                }).setNegativeButton("No", null).show();
+                }).setNegativeButton(R.string.no, null).show();
                 return true;
             }
         });
     }
 
-    public void addNewNode(int position, String name, String description) {
+    public void addNewNode(int position, String name) {
 
         nodeAdapter.addExtraNode(position, name);
     }

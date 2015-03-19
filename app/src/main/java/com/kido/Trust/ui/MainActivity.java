@@ -96,7 +96,7 @@ public class MainActivity extends NavigationLiveo implements NavigationLiveoList
 
 
         ParseHelper mParse = new ParseHelper(this, null);
-        mParse.initParse();
+        mParse.initParse(getIntent());
         loginUser();
     }
 

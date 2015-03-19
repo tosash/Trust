@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.ListView;
 
-import com.kido.Trust.adapter.SimpleTreeListViewAdapter;
+import com.kido.Trust.adapter.TreeListViewAdapter;
 import com.kido.Trust.util.Node;
 
 import java.util.List;
@@ -13,7 +13,8 @@ import java.util.List;
 public class FragmentUserList extends Fragment {
 
     private ListView mTree;
-    private SimpleTreeListViewAdapter<Node> mAdapter;
+    //    private SimpleTreeListViewAdapter<Node> mAdapter;
+    private TreeListViewAdapter<Node> mAdapter;
     private List<Node> mDatas;
 
     private boolean mSearchCheck;
