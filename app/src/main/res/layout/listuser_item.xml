@@ -20,8 +20,8 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:src="@drawable/ic_no_clientphoto"
         android:layout_toRightOf="@+id/id_item_icon" />
+    <!--android:src="@drawable/ic_no_clientphoto"-->
 
     <TextView
         android:id="@+id/id_item_text"
@@ -29,8 +29,8 @@
         android:layout_height="wrap_content"
         android:text="name item"
         android:textSize="18sp"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/id_item_photo" />
+        android:layout_centerVertical="true"/>
+        <!--android:layout_toRightOf="@+id/id_item_photo" />-->
 
     <TextView
         android:id="@+id/id_item_decs"

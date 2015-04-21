@@ -1,16 +1,23 @@
 package com.kido.Trust.ui;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.View;
 import android.widget.ListView;
 
+import com.kido.Trust.R;
 import com.kido.Trust.adapter.TreeListViewAdapter;
 import com.kido.Trust.util.Node;
 
 import java.util.List;
 
-public class FragmentUserList extends Fragment {
+import yalantis.com.sidemenu.interfaces.ScreenShotable;
+
+public class FragmentUserList extends Fragment implements ScreenShotable {
 
     private ListView mTree;
     //    private SimpleTreeListViewAdapter<Node> mAdapter;
@@ -20,14 +27,45 @@ public class FragmentUserList extends Fragment {
     private boolean mSearchCheck;
     private static final String TEXT_FRAGMENT = "TEXT_FRAGMENT";
     Context context;
+    private View containerView;
+    private Bitmap bitmap;
 
-    public FragmentUserList newInstance(String text) {
+    public static FragmentUserList newInstance(String text) {
         FragmentUserList mFragment = new FragmentUserList();
         Bundle mBundle = new Bundle();
         mBundle.putString(TEXT_FRAGMENT, text);
         mFragment.setArguments(mBundle);
         return mFragment;
     }
+
+    @Override
+    public void takeScreenShot() {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                Bitmap bitmap = Bitmap.createBitmap(containerView.getWidth(),
+                        containerView.getHeight(), Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(bitmap);
+                containerView.draw(canvas);
+                FragmentUserList.this.bitmap = bitmap;
+            }
+        };
+
+        thread.start();
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        this.containerView = view.findViewById(R.id.container);
+
+    }
+
+    @Override
+    public Bitmap getBitmap() {
+        return null;
+    }
+}
 
 //    @Override
 //    public void onAttach(Activity activity) {
@@ -158,5 +196,3 @@ public class FragmentUserList extends Fragment {
 //        });
 //    }
 //
-
-}

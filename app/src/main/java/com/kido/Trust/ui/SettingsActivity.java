@@ -15,31 +15,52 @@
  */
 package com.kido.Trust.ui;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.app.Fragment;
 import android.view.MenuItem;
-import android.widget.TextView;
 
-import com.kido.Trust.R;
+import yalantis.com.sidemenu.interfaces.ScreenShotable;
 
-public class SettingsActivity extends ActionBarActivity {
+public class SettingsActivity extends Fragment implements ScreenShotable {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_main);
+//        setContentView(R.layout.fragment_main);
 
-        TextView mTxtTitle = (TextView) findViewById(R.id.txtTitle);
-        mTxtTitle.setText(getString(R.string.settings));
-
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        TextView mTxtTitle = (TextView) findViewById(R.id.txtTitle);
+//        mTxtTitle.setText(getString(R.string.settings));
+//
+//        getSupportActionBar().setHomeButtonEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        finish();
+//        finish();
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void takeScreenShot() {
+//        Thread thread = new Thread() {
+//            @Override
+//            public void run() {
+//                Bitmap bitmap = Bitmap.createBitmap(containerView.getWidth(),
+//                        containerView.getHeight(), Bitmap.Config.ARGB_8888);
+//                Canvas canvas = new Canvas(bitmap);
+//                containerView.draw(canvas);
+//                FragmentTreeList.this.bitmap = bitmap;
+//            }
+//        };
+//
+//        thread.start();
+    }
+
+    @Override
+    public Bitmap getBitmap() {
+        return null;
     }
 }

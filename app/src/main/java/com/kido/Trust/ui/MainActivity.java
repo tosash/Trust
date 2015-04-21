@@ -1,99 +1,81 @@
-/*
- * Copyright 2015 Rudson Lima
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.kido.Trust.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.util.SparseIntArray;
-import android.view.Menu;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.widget.LinearLayout;
 
 import com.kido.Trust.R;
 import com.kido.Trust.parse.ParseHelper;
 import com.parse.ParseUser;
+import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import br.liveo.interfaces.NavigationLiveoListener;
-import br.liveo.navigationliveo.NavigationLiveo;
+import io.codetail.animation.SupportAnimator;
+import io.codetail.animation.ViewAnimationUtils;
+import yalantis.com.sidemenu.interfaces.Resourceble;
+import yalantis.com.sidemenu.interfaces.ScreenShotable;
+import yalantis.com.sidemenu.model.SlideMenuItem;
+import yalantis.com.sidemenu.util.ViewAnimator;
 
 import static com.kido.Trust.parse.ParseHelper.isUserLoggedIn;
 
 
-public class MainActivity extends NavigationLiveo implements NavigationLiveoListener {
+public class MainActivity extends ActionBarActivity implements ViewAnimator.ViewAnimatorListener
+        , OnMenuItemClickListener
+{
 
-    public List<String> mListNameItem;
+    public static final String CLOSE = "Close";
+    public static final String TASKS = "Tasks";
+    public static final String USERS = "Users";
+    public static final String ARHIVE = "Arhive";
+    public static final String SETTINGS = "Settings";
+    public static final String LOGOUT = "LogOut";
+
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle drawerToggle;
+    private List<SlideMenuItem> list = new ArrayList<>();
+    private FragmentTreeList fTreeList;
+    private ViewAnimator viewAnimator;
+    private int res = R.drawable.icn_settings;
+    private LinearLayout linearLayout;
 
     @Override
-    public void onUserInformation() {
-        //User information here
-        this.mUserName.setText("");
-        this.mUserEmail.setText("");
-        this.mUserPhoto.setImageResource(R.drawable.ic_no_user);
-        this.mUserBackground.setImageResource(R.drawable.ic_user_background);
-    }
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        fTreeList = FragmentTreeList.newInstance(R.drawable.icn_settings);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, fTreeList)
+                .commit();
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout.setScrimColor(Color.TRANSPARENT);
+        linearLayout = (LinearLayout) findViewById(R.id.left_drawer);
+        linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.closeDrawers();
+            }
+        });
 
-
-    @Override
-    public void onInt(Bundle savedInstanceState) {
-
-        //Creation of the list items is here
-
-        // set listener {required}
-        this.setNavigationListener(this);
-
-        //First item of the position selected from the list
-        this.setDefaultStartPositionNavigation(1);
-
-        // name of the list items
-        mListNameItem = new ArrayList<>();
-        mListNameItem.add(0, getString(R.string.jobs));
-        mListNameItem.add(1, getString(R.string.tasks));
-//        mListNameItem.add(4, getString(R.string.more_markers)); //This item will be a subHeader
-        mListNameItem.add(2, getString(R.string.users));
-        mListNameItem.add(3, getString(R.string.arhive));
-
-        // icons list items
-        List<Integer> mListIconItem = new ArrayList<>();
-        mListIconItem.add(0, R.drawable.ic_report_black_24dp);
-        mListIconItem.add(1, R.drawable.ic_drafts_black_24dp);
-        mListIconItem.add(2, R.drawable.ic_star_black_24dp);
-        mListIconItem.add(3, R.drawable.ic_delete_black_24dp);
-
-//        mListIconItem.add(4, 0); //When the item is a subHeader the value of the icon 0
-
-        //{optional} - Among the names there is some subheader, you must indicate it here
-        List<Integer> mListHeaderItem = new ArrayList<>();
-//        mListHeaderItem.add(4);
-
-        //{optional} - Among the names there is any item counter, you must indicate it (position) and the value here
-        SparseIntArray mSparseCounterItem = new SparseIntArray(); //indicate all items that have a counter
-        mSparseCounterItem.put(0, 7);
-        mSparseCounterItem.put(1, 12);
-
-        //If not please use the FooterDrawer use the setFooterVisible(boolean visible) method with value false
-        this.setFooterInformationDrawer(R.string.settings, R.drawable.ic_settings_black_24dp);
-
-        this.setNavigationAdapter(mListNameItem, mListIconItem, mListHeaderItem, mSparseCounterItem);
-
+        setActionBar();
+        createMenuList();
+        viewAnimator = new ViewAnimator<>(this, list, fTreeList, drawerLayout, this);
 
         ParseHelper mParse = new ParseHelper(this, null);
         mParse.initParse(getIntent());
@@ -105,8 +87,23 @@ public class MainActivity extends NavigationLiveo implements NavigationLiveoList
         if (!loggedIn)
             startActivity(new Intent(this, LoginActivity.class));
         else {
-            mUserName.setText(ParseUser.getCurrentUser().getUsername());
+//            mUserName.setText(ParseUser.getCurrentUser().getUsername());
         }
+    }
+
+    private void createMenuList() {
+        SlideMenuItem menuItem0 = new SlideMenuItem(this.CLOSE, R.drawable.icn_quit);
+        list.add(menuItem0);
+        SlideMenuItem menuItem = new SlideMenuItem(this.TASKS, R.drawable.icn_tasks);
+        list.add(menuItem);
+        SlideMenuItem menuItem2 = new SlideMenuItem(this.USERS, R.drawable.icn_users);
+        list.add(menuItem2);
+        SlideMenuItem menuItem3 = new SlideMenuItem(this.ARHIVE, R.drawable.check_task);
+        list.add(menuItem3);
+        SlideMenuItem menuItem4 = new SlideMenuItem(this.SETTINGS, R.drawable.icn_settings);
+        list.add(menuItem4);
+        SlideMenuItem menuItem5 = new SlideMenuItem(this.LOGOUT, R.drawable.icn_logout);
+        list.add(menuItem5);
     }
 
     @Override
@@ -127,75 +124,157 @@ public class MainActivity extends NavigationLiveo implements NavigationLiveoList
                 .show();
     }
 
-    @Override
-    public void onItemClickNavigation(int position, int layoutContainerId) {
-        Fragment mFragment = null;
-        FragmentManager mFragmentManager = getSupportFragmentManager();
 
-        switch (position) {
-            case 0:
-                mFragment = new FragmentTreeList().newInstance(mListNameItem.get(position));
-                break;
-            case 1:
-                mFragment = new FragmentTreeList().newInstance(mListNameItem.get(position));
-                break;
-            case 2:
-                mFragment = new FragmentUserList().newInstance(mListNameItem.get(position));
-                break;
+    private void setActionBar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        drawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                drawerLayout,         /* DrawerLayout object */
+                toolbar,  /* nav drawer icon to replace 'Up' caret */
+                R.string.drawer_open,  /* "open drawer" description */
+                R.string.drawer_close  /* "close drawer" description */
+        ) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                linearLayout.removeAllViews();
+                linearLayout.invalidate();
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                if (slideOffset > 0.6 && linearLayout.getChildCount() == 0)
+                    viewAnimator.showMenuContent();
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+        };
+        drawerLayout.setDrawerListener(drawerToggle);
+    }
+
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
+    }
+
+
+    private ScreenShotable replaceFragment(ScreenShotable screenShotable, int topPosition) {
+//        this.res = this.res == R.drawable.ic_no_clientphoto ? R.drawable.ic_no_clientphoto : R.drawable.ic_no_clientphoto;
+        View view = findViewById(R.id.content_frame);
+        int finalRadius = Math.max(view.getWidth(), view.getHeight());
+        SupportAnimator animator = ViewAnimationUtils.createCircularReveal(view, 0, topPosition, 0, finalRadius);
+        animator.setInterpolator(new AccelerateInterpolator());
+        animator.setDuration(ViewAnimator.CIRCULAR_REVEAL_ANIMATION_DURATION);
+
+        findViewById(R.id.content_overlay).setBackgroundDrawable(new BitmapDrawable(getResources(), screenShotable.getBitmap()));
+        animator.start();
+
+
+//        Fragment mFragment = new Fragment();
+//        switch (topPosition) {
+//            case 1:
+//                mFragment = FragmentTreeList.newInstance(this.res);
+//                break;
+//            case 2:
+//                mFragment = FragmentUserList.newInstance("");
+//                break;
+//            case 3:
+//                break;
+//            case 4:
+//                startActivity(new Intent(this, SettingsActivity.class));
+//                break;
+//            case 5:
+//                break;
+//
+//        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, (Fragment) screenShotable).commit();
+        return screenShotable;
+    }
+
+    @Override
+    public ScreenShotable onSwitch(Resourceble slideMenuItem, ScreenShotable screenShotable, int position) {
+        switch (slideMenuItem.getName()) {
+            case CLOSE:
+                return screenShotable;
+            case TASKS:
+                return replaceFragment((ScreenShotable) FragmentTreeList.newInstance(1), position);
+            case USERS:
+                return replaceFragment((ScreenShotable) FragmentUserList.newInstance(""), position);
+            case ARHIVE:
+                return replaceFragment((ScreenShotable) FragmentTreeList.newInstance(1), position);
+            case SETTINGS:
+                return replaceFragment((ScreenShotable) new SettingsActivity(), position);
+            case LOGOUT:
+                new AlertDialog.Builder(this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle(R.string.log_out_title)
+                        .setMessage(R.string.log_out_quetion)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ParseUser.logOut();
+                                loginUser();
+                            }
+
+                        })
+                        .setNegativeButton(R.string.no, null)
+                        .show();
+                return screenShotable;
             default:
-                break;
-
-        }
-
-        if (mFragment != null)
-
-        {
-            mFragmentManager.beginTransaction().replace(layoutContainerId, mFragment).commit();
-        }
-
-    }
-
-    @Override
-    public void onPrepareOptionsMenuNavigation(Menu menu, int position, boolean visible) {
-
-        //hide the menu when the navigation is opens
-        switch (position) {
-            case 0:
-                menu.findItem(R.id.menu_add).setVisible(!visible);
-                menu.findItem(R.id.menu_search).setVisible(!visible);
-                break;
-
-            case 1:
-                menu.findItem(R.id.menu_add).setVisible(!visible);
-                menu.findItem(R.id.menu_search).setVisible(!visible);
-                break;
+               return screenShotable;
         }
     }
 
     @Override
-    public void onClickUserPhotoNavigation(View v) {
-        new AlertDialog.Builder(this)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setTitle(R.string.log_out_title)
-                .setMessage(R.string.log_out_quetion)
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ParseUser.logOut();
-                        loginUser();
-                    }
+    public void disableHomeButton() {
+        getSupportActionBar().setHomeButtonEnabled(false);
 
-                })
-                .setNegativeButton(R.string.no, null)
-                .show();
     }
 
     @Override
-    public void onClickFooterItemNavigation(View v) {
-        //footer onClick
-        startActivity(new Intent(this, SettingsActivity.class));
+    public void enableHomeButton() {
+        getSupportActionBar().setHomeButtonEnabled(true);
+        drawerLayout.closeDrawers();
 
     }
 
+    @Override
+    public void addViewToContainer(View view) {
+        linearLayout.addView(view);
+    }
+
+    @Override
+    public void onMenuItemClick(View view, int i) {
+        Fragment f =  getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        if (f instanceof FragmentTreeList) {
+            Handler handler=((FragmentTreeList)f).handlerMenu;
+            Message msg = new Message();
+            msg.what=i;
+            msg.obj=view;
+            handler.sendMessage(msg);
+        }
+    }
 
 }

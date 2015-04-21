@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="default_item_color">#FFFFFF</color>
-    <color name="current_item_color">#e0e0e0</color>
+    <color name="current_item_color">#D9FFDB</color>
+    <color name="text_color">#222222</color>
+    <color name="toolbar_color">#7180FF</color>
+    <color name="context_color">#372AB6</color>
 </resources>

@@ -31,6 +31,15 @@ public class TreeListViewAdapter<T> extends BaseAdapter {
     protected List<Node> mVisibleNodes;
     protected LayoutInflater mInflater;
     protected ListView mTree;
+
+    public int getCurrentNode() {
+        return currentNode;
+    }
+
+    public void setCurrentNode(int currentNode) {
+        this.currentNode = currentNode;
+    }
+
     protected int currentNode;
 
     /**
@@ -51,7 +60,7 @@ public class TreeListViewAdapter<T> extends BaseAdapter {
                 case ParseHelper.ADD_NEW_NODE:
                     Node node = (Node) msg.obj;
                     if (msg.arg1 >= 0) {
-                        Node nodeParent = findNodeByPid(mAllnodes, node.getPid());
+                        Node nodeParent = findNodeByPid(node.getPid());
                         node.setParent(nodeParent);
                         nodeParent.getChildren().add(node);
                         mAllnodes.add(msg.arg1 + 1, node);
@@ -60,7 +69,16 @@ public class TreeListViewAdapter<T> extends BaseAdapter {
                     }
                     mVisibleNodes = TreeHelper.filterVisibleNode(mAllnodes);
                     notifyDataSetChanged();
-
+                    break;
+                case ParseHelper.EDIT_NODE:
+                    Node nodeE = (Node) msg.obj;
+                    Node tempNode=mVisibleNodes.get(msg.arg1);
+                    int i = mAllnodes.indexOf(tempNode);
+                    nodeE.setParent(tempNode.getParent());
+                    nodeE.setChildren(tempNode.getChildren());
+                    mAllnodes.set(i,nodeE);
+                    mVisibleNodes = TreeHelper.filterVisibleNode(mAllnodes);
+                    notifyDataSetChanged();
                     break;
                 case ParseHelper.ERROR_PARSE:
                     Toast.makeText(mContext, ((ParseException) msg.obj).getMessage(), Toast.LENGTH_SHORT).show();
@@ -206,15 +224,31 @@ public class TreeListViewAdapter<T> extends BaseAdapter {
         ParseHelper parse = new ParseHelper(mContext, handler);
         Node extraNode = new Node("", "0", text);
         parse.addNewNode(extraNode, -1);
+
+
     }
 
-    public Node findNodeByPid(List<Node> list, String pid) {
-        for (Node node : list) {
+    public void editNodeDesc(int position, String text) {
+        ParseHelper parse = new ParseHelper(mContext, handler);
+        Node node = mVisibleNodes.get(position);
+        int indexOf = mAllnodes.indexOf(node);
+        Log.e("TAG", "--" + indexOf);
+        Node extraNode = mAllnodes.get(indexOf);
+        extraNode.setDescription(text);
+        parse.updateNode(extraNode,position);
+    }
+
+    public Node findNodeByPid(String pid) {
+        for (Node node : mAllnodes) {
             if (node.getId().equals(pid)) {
                 return node;
             }
         }
         return null;
+    }
+
+    public Node findNodeByPos(int i) {
+        return mVisibleNodes.get(i);
     }
 
     private class ViewHolder {
